@@ -13,6 +13,3 @@ evitable-derive-core = { version = "0.1.0", path = "../evitable-derive-core" }
 
 [lib]
 proc-macro = true
-
-[dev-dependencies]
-evitable = { version = "0.1", path = "../evitable" }
