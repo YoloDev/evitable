@@ -1,0 +1,16 @@
+[package]
+name = "evitable-syn-meta-ext"
+version = "0.1.0"
+authors = ["Aleksander Heintz <alxandr@alxandr.me>"]
+edition = "2018"
+
+[features]
+diagnostics = []
+suggestions = ["strsim"]
+
+[dependencies]
+syn = { version = "0.15", features = ["full", "extra-traits"] }
+quote = "0.6"
+proc-macro2 = "0.4"
+strsim = { version = "0.7", optional = true }
+ident_case = "1"

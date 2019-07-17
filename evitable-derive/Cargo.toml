@@ -1,0 +1,14 @@
+[package]
+name = "evitable-derive"
+version = "0.1.0"
+authors = ["Aleksander Heintz <alxandr@alxandr.me>"]
+edition = "2018"
+
+[dependencies]
+evitable-derive-core = { version = "0.1.0", path = "../evitable-derive-core" }
+
+[lib]
+proc-macro = true
+
+[dev-dependencies]
+evitable = { version = "0.1", path = "../evitable" }

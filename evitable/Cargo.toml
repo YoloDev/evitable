@@ -1,0 +1,12 @@
+[package]
+name = "evitable"
+version = "0.1.0"
+authors = ["Aleksander Heintz <alxandr@alxandr.me>"]
+edition = "2018"
+
+[dependencies]
+evitable-derive = { version = "0.1.0", path = "../evitable-derive", optional = true }
+
+[features]
+default = ["derive"]
+derive = ["evitable-derive"]

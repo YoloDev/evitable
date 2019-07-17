@@ -1,0 +1,7 @@
+[workspace]
+members = [
+  "syn-meta-ext",
+  "evitable",
+  "evitable-derive-core",
+  "evitable-derive"
+]
