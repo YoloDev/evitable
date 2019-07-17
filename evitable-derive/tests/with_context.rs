@@ -34,7 +34,8 @@ fn from_io_with_context() {
   use std::io;
 
   fn fail() -> Result<()> {
-    let result = Err(io::Error::from(io::ErrorKind::NotFound)).context(|| Context::Custom { code: 10 })?;
+    let result =
+      Err(io::Error::from(io::ErrorKind::NotFound)).context(|| Context::Custom { code: 10 })?;
 
     Ok(result)
   }
@@ -43,7 +44,6 @@ fn from_io_with_context() {
   assert_eq!(err.kind(), ErrorKind::Custom { code: 10 });
   assert!(err.source().is_some());
 }
-
 
 #[test]
 fn option_context() {

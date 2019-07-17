@@ -1,6 +1,6 @@
+use evitable_syn_meta_ext::PathExt;
 use proc_macro2::{Ident, Span};
 use syn::{parse_str, PathArguments, PathSegment, Token, VisRestricted, Visibility};
-use evitable_syn_meta_ext::PathExt;
 
 fn create_super_vis(depth: usize) -> Visibility {
   let mut code = String::new();
