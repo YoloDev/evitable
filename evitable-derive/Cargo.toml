@@ -3,6 +3,10 @@ name = "evitable-derive"
 version = "0.1.0"
 authors = ["Aleksander Heintz <alxandr@alxandr.me>"]
 edition = "2018"
+homepage = "https://github.com/YoloDev/evitable"
+repository = "https://github.com/YoloDev/evitable"
+description = "Derive implementation for evitable"
+license = "MIT"
 
 [dependencies]
 evitable-derive-core = { version = "0.1.0", path = "../evitable-derive-core" }

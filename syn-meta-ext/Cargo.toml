@@ -3,6 +3,10 @@ name = "evitable-syn-meta-ext"
 version = "0.1.0"
 authors = ["Aleksander Heintz <alxandr@alxandr.me>"]
 edition = "2018"
+homepage = "https://github.com/YoloDev/evitable"
+repository = "https://github.com/YoloDev/evitable"
+description = "Helpers for syn metadata used by evitable-derive-core"
+license = "MIT"
 
 [features]
 diagnostics = []
