@@ -25,7 +25,7 @@ fn from_io() {
   }
 
   let err = fail().unwrap_err();
-  assert_eq!(err.kind(), ErrorKind::Io);
+  assert_eq!(err.kind(), evitable_context::ErrorKind::Io);
   assert!(err.source().is_some());
 }
 
@@ -41,7 +41,7 @@ fn from_io_with_context() {
   }
 
   let err = fail().unwrap_err();
-  assert_eq!(err.kind(), ErrorKind::Custom { code: 10 });
+  assert_eq!(err.kind(), evitable_context::ErrorKind::Custom { code: 10 });
   assert!(err.source().is_some());
 }
 
@@ -54,6 +54,6 @@ fn option_context() {
   }
 
   let err = fail().unwrap_err();
-  assert_eq!(err.kind(), ErrorKind::Custom { code: 42 });
+  assert_eq!(err.kind(), evitable_context::ErrorKind::Custom { code: 42 });
   assert!(err.source().is_none());
 }

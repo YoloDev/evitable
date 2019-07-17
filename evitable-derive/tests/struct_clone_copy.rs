@@ -39,7 +39,7 @@ mod clone {
     let kind = err.kind();
     assert_eq!(
       kind,
-      ErrorKind::Test {
+      evitable_test::ErrorKind::Test {
         cloned: IncrementWhenCloned(1)
       }
     );
@@ -75,7 +75,7 @@ mod copy {
     let kind = err.kind();
     assert_eq!(
       kind,
-      ErrorKind::Test {
+      evitable_test::ErrorKind::Test {
         copied: IncrementWhenCloned(0)
       }
     );
