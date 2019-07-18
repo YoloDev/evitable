@@ -7,14 +7,14 @@ steps:
   - script: |
       curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain ${{ parameters.rustupToolchain }}
       echo "##vso[task.setvariable variable=PATH;]$PATH:$HOME/.cargo/bin"
-    displayName: Install rust
+    displayName: Install rust (Linux)
 
 - ${{ if eq( variables['Agent.OS'], 'Windows_NT' ) }}:
   - script: |
       curl -sSf -o rustup-init.exe https://win.rustup.rs
       rustup-init.exe -y --default-toolchain ${{ parameters.rustupToolchain }}
       echo "##vso[task.setvariable variable=PATH;]%PATH%;%USERPROFILE%\.cargo\bin"
-    displayName: Install rust
+    displayName: Install rust (Windows)
 
 - script: cargo build --all
   displayName: Cargo build
@@ -37,6 +37,6 @@ steps:
       testRunTitle: $(System.JobDisplayName)
     condition: succeededOrFailed()
 
-- ${{ if eq(parameters.exportTests, 'true') }}:
+- ${{ if ne(parameters.exportTests, 'true') }}:
   - script: cargo test
     displayName: Run tests
