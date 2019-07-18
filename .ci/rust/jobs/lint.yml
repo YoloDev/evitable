@@ -1,0 +1,13 @@
+jobs:
+- job: lint
+  displayName: Lint
+  pool:
+    vmImage: 'ubuntu-16.04'
+  container: 'rust:latest'
+  steps:
+    - script: rustup component add clippy rustfmt
+      displayName: Install Clippy & Rustfmt
+    - script: cargo fmt --all -- --check
+      displayName: Run Rustfmt
+    - script: cargo clippy --all
+      displayName: Run clippy

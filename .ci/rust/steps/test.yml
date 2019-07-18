@@ -1,0 +1,42 @@
+parameters:
+  exportTests: 'false'
+  rustupToolchain: 'stable'
+
+steps:
+- ${{ if ne( variables['Agent.OS'], 'Windows_NT' ) }}:
+  - script: |
+      curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain ${{ rustupToolchain }}
+      echo "##vso[task.setvariable variable=PATH;]$PATH:$HOME/.cargo/bin"
+    displayName: Install rust
+
+- ${{ if eq( variables['Agent.OS'], 'Windows_NT' ) }}:
+  - script: |
+      curl -sSf -o rustup-init.exe https://win.rustup.rs
+      rustup-init.exe -y --default-toolchain ${{ rustupToolchain }}
+      echo "##vso[task.setvariable variable=PATH;]%PATH%;%USERPROFILE%\.cargo\bin"
+    displayName: Install rust
+
+- script: cargo build --all
+  displayName: Cargo build
+
+- ${{ if eq(parameters.exportTests, 'true') }}:
+  - script: cargo install cargo2junit
+    displayName: Install cargo2junit
+
+  - script: cargo test -- -Z unstable-options --format json | tee test_results.json
+    displayName: Run tests
+
+  - script:  cat test_results.json | cargo2junit > test_results.xml
+    displayName: Convert test results to junit format using cargo2junit
+    condition: succeededOrFailed()
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: 'JUnit'
+      testResultsFiles: 'test_results.xml'
+      testRunTitle: $(System.JobDisplayName)
+    condition: succeededOrFailed()
+
+- ${{ if eq(parameters.exportTests, 'true') }}:
+  - script: cargo test
+    displayName: Run tests
