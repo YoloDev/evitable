@@ -1,6 +1,6 @@
 [package]
 name = "evitable"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Aleksander Heintz <alxandr@alxandr.me>"]
 edition = "2018"
 homepage = "https://github.com/YoloDev/evitable"
@@ -9,7 +9,7 @@ description = "Custom error types with context and derive"
 license = "MIT"
 
 [dependencies]
-evitable-derive = { version = "0.1.0", path = "../evitable-derive", optional = true }
+evitable-derive = { version = "0.1.1", path = "../evitable-derive", optional = true }
 
 [features]
 default = ["derive"]

@@ -2,23 +2,23 @@
 # It is not intended for manual editing.
 [[package]]
 name = "evitable"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
- "evitable-derive 0.1.0",
+ "evitable-derive 0.1.1",
 ]
 
 [[package]]
 name = "evitable-derive"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
- "evitable-derive-core 0.1.0",
+ "evitable-derive-core 0.1.1",
 ]
 
 [[package]]
 name = "evitable-derive-core"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
- "evitable-syn-meta-ext 0.1.0",
+ "evitable-syn-meta-ext 0.1.1",
  "ident_case 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "proc-macro2 0.4.30 (registry+https://github.com/rust-lang/crates.io-index)",
  "quote 0.6.13 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -27,7 +27,7 @@ dependencies = [
 
 [[package]]
 name = "evitable-syn-meta-ext"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "ident_case 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "proc-macro2 0.4.30 (registry+https://github.com/rust-lang/crates.io-index)",

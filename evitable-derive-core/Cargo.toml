@@ -1,6 +1,6 @@
 [package]
 name = "evitable-derive-core"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Aleksander Heintz <alxandr@alxandr.me>"]
 edition = "2018"
 homepage = "https://github.com/YoloDev/evitable"
@@ -13,4 +13,4 @@ ident_case = "1"
 proc-macro2 = "0.4"
 quote = "0.6"
 syn = { version = "0.15", features = ["full", "extra-traits"] }
-evitable-syn-meta-ext = { version = "0.1", path = "../syn-meta-ext" }
+evitable-syn-meta-ext = { version = "0.1.1", path = "../syn-meta-ext" }
