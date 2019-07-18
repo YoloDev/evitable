@@ -3,7 +3,7 @@ parameters:
   toolchain: 'stable'
 
 jobs:
-- job: build
+- job: build-${{ parameters.os }}-${{ parameters.toolchain }}
   displayName: Build ${{ parameters.os }}-${{ parameters.toolchain }}
 
   pool:
