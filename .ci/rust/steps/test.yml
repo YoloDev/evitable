@@ -4,13 +4,14 @@ parameters:
   rustupToolchain: 'stable'
 
 steps:
-- script: 'echo "windows: ${{ parameters.windows }}, toolchain: ${{ parameters.rustupToolchain }}"'
+- script: 'echo "windows: ${{ parameters.windows }}, toolchain: ${{ parameters.rustupToolchain }}, export: ${{ parameters.exportTests }}"'
+  displayName: Display job info
 
-- ${{ if ne(parameters.exportTests, 'true') }}:
+- ${{ if ne(parameters.windows, 'true') }}:
   - script: |
       curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain ${{ parameters.rustupToolchain }}
       echo "##vso[task.setvariable variable=PATH;]$PATH:$HOME/.cargo/bin"
-    displayName: Install rust (Linux)
+    displayName: Install rust
 
 - ${{ if eq(parameters.windows, 'true') }}:
   - script: |
