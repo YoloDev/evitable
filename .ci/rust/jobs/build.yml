@@ -1,0 +1,61 @@
+parameters:
+  os: 'linux'
+  toolchain: 'stable'
+
+jobs:
+- job: build
+  displayName: Build ${{ parameters.os }}-${{ parameters.toolchain }}
+
+  pool:
+    ${{ if eq(parameters.os, 'linux') }}:
+      vmImage: 'ubuntu-16.04'
+    ${{ if eq(parameters.os, 'osx') }}:
+      vmImage: 'macos-10.13'
+    ${{ if eq(parameters.os, 'windows' )}}:
+      vmImage: 'windows-2019'
+
+  steps:
+    - script: 'echo "windows: ${{ parameters.windows }}, toolchain: ${{ parameters.rustupToolchain }}, export: ${{ parameters.exportTests }}"'
+      displayName: Display job info
+
+# steps:
+# - script: 'echo "windows: ${{ parameters.windows }}, toolchain: ${{ parameters.rustupToolchain }}, export: ${{ parameters.exportTests }}"'
+#   displayName: Display job info
+
+# - ${{ if ne(parameters.windows, 'true') }}:
+#   - script: |
+#       curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain ${{ parameters.rustupToolchain }}
+#       echo "##vso[task.setvariable variable=PATH;]$PATH:$HOME/.cargo/bin"
+#     displayName: Install rust
+
+# - ${{ if eq(parameters.windows, 'true') }}:
+#   - script: |
+#       curl -sSf -o rustup-init.exe https://win.rustup.rs
+#       rustup-init.exe -y --default-toolchain ${{ parameters.rustupToolchain }}
+#       echo "##vso[task.setvariable variable=PATH;]%PATH%;%USERPROFILE%\.cargo\bin"
+#     displayName: Install rust (Windows)
+
+# - script: cargo build --all
+#   displayName: Cargo build
+
+# - ${{ if eq(parameters.exportTests, 'true') }}:
+#   - script: cargo install cargo2junit
+#     displayName: Install cargo2junit
+
+#   - script: cargo test -- -Z unstable-options --format json | tee test_results.json
+#     displayName: Run tests
+
+#   - script:  cat test_results.json | cargo2junit > test_results.xml
+#     displayName: Convert test results to junit format using cargo2junit
+#     condition: succeededOrFailed()
+
+#   - task: PublishTestResults@2
+#     inputs:
+#       testResultsFormat: 'JUnit'
+#       testResultsFiles: 'test_results.xml'
+#       testRunTitle: $(System.JobDisplayName)
+#     condition: succeededOrFailed()
+
+# - ${{ if ne(parameters.exportTests, 'true') }}:
+#   - script: cargo test
+#     displayName: Run tests
