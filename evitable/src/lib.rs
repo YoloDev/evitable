@@ -66,3 +66,19 @@ impl<T, E: StdError + 'static, C: ErrorContext> ResultExt<T, E, C> for Result<T,
     self.map_err(|e| C::Error::from_error_context(f(&e), e))
   }
 }
+
+#[macro_export]
+macro_rules! ensure {
+  ($test:expr, $ctx:expr) => {
+    if !($test) {
+      let _ = Err($ctx)?;
+    }
+  };
+}
+
+#[macro_export]
+macro_rules! fail {
+  ($ctx:expr) => {
+    let _ = Err($ctx)?;
+  };
+}
