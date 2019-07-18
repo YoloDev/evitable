@@ -61,7 +61,7 @@
 //!
 //! let result = parse_file();
 //! let err = result.unwrap_err();
-//! assert_eq!(err.kind(), ErrorKind::Io);
+//! assert_eq!(err.kind(), evitable_context::ErrorKind::Io);
 //! ```
 
 #[cfg(feature = "derive")]
