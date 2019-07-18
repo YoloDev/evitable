@@ -62,10 +62,14 @@ impl Attrs {
     Ok(None)
   }
 
-  pub fn get_required<T: FromMeta, S: AsRef<str>>(&mut self, name: S) -> Result<T> {
+  pub fn get_required<T: FromMeta, S: AsRef<str>, O: Spanned>(
+    &mut self,
+    name: S,
+    span: &O,
+  ) -> Result<T> {
     self
       .get_optional(&name)
-      .and_then(|v| v.ok_or_else(|| Error::missing_field(name.as_ref())))
+      .and_then(|v| v.ok_or_else(|| Error::missing_field(name.as_ref()).with_span(span)))
   }
 
   pub fn get_list<T: FromMeta, S: AsRef<str>>(&mut self, name: S) -> Result<Vec<T>> {

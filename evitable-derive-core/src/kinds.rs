@@ -151,7 +151,7 @@ impl<'a> ToTokens for ErrorKinds<'a> {
 
       #[automatically_derived]
       #[allow(unused_qualifications)]
-      impl ::evitable::ErrorKind for ErrorKind {}
+      impl ::evitable::EvitableErrorKind for ErrorKind {}
     });
   }
 }

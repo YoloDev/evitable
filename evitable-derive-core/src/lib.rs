@@ -269,7 +269,7 @@ impl FromVariant for ErrorVariant {
       .clone()
       .try_map_fields(|field| ErrorField::from_field(&field))?;
 
-    let description: Description = attrs.get_required("description")?;
+    let description: Description = attrs.get_required("description", &variant.ident)?;
     let description = description.resolve_from_variant(&fields)?;
     let from_impls = attrs.get_list("from")?;
     attrs.ensure_used()?;
@@ -391,7 +391,7 @@ impl FromDeriveInput for ErrorType {
     let fields = (&input.fields).try_map_fields(ErrorField::from_field)?;
     let mut evitable_attrs = Attrs::from_attributes(attrs)?;
     let attrs = ErrorTypeAttrs::from_attrs(&mut evitable_attrs)?;
-    let description: Description = evitable_attrs.get_required("description")?;
+    let description: Description = evitable_attrs.get_required("description", ident)?;
     let description = description.resolve_from_inst(&fields, "self")?;
     let from_impls = evitable_attrs.get_list("from")?;
     evitable_attrs.ensure_used()?;
@@ -434,7 +434,7 @@ impl ToTokens for ErrorType {
 
           #[inline]
           fn kind(&self) -> ErrorKind {
-            self.0.kind()
+            ::evitable::ErrorContext::kind(&self.0)
           }
         }
 

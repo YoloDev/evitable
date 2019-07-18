@@ -112,7 +112,7 @@ impl<'a> ToTokens for FromImplFor {
     tokens.extend(quote! {
       impl ::std::convert::From<#path> for #mod_name::Error {
         fn from(err: #path) -> Self {
-          #inst.into_error(err)
+          ::evitable::ErrorContext::into_error(#inst, err)
         }
       }
     })
