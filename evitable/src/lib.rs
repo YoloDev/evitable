@@ -64,6 +64,8 @@
 //! assert_eq!(err.kind(), evitable_context::ErrorKind::Io);
 //! ```
 
+extern crate backtrace;
+
 #[cfg(feature = "derive")]
 extern crate evitable_derive;
 
@@ -74,6 +76,7 @@ pub use evitable_derive::ErrorContext;
 
 #[doc(hidden)]
 pub use std::error::Error as StdError;
+pub use backtrace::Backtrace;
 
 /// Trait for "error kinds". An `ErrorKind` enum is generated for
 /// every `#[derive(ErrorContext)]` which typically just contains
@@ -149,6 +152,9 @@ pub trait EvitableError: StdError + Sized + 'static {
 
   /// Get the error context.
   fn context(&self) -> &Self::Context;
+
+  /// Get backtrace.
+  fn backtrace(&self) -> &Backtrace;
 
   /// Create a new error instance from an error context.
   ///

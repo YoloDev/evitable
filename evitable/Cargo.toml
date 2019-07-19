@@ -10,6 +10,7 @@ license = "MIT"
 
 [dependencies]
 evitable-derive = { version = "0.1.1", path = "../evitable-derive", optional = true }
+backtrace = { version = "0.3" }
 
 [features]
 default = ["derive"]

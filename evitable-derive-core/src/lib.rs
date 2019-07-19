@@ -424,17 +424,26 @@ impl ToTokens for ErrorType {
         #kinds
         #from_context
 
-        #mod_item_vis struct Error(super::#ty, Option<Box<dyn ::std::error::Error + 'static>>);
+        #mod_item_vis struct Error {
+          context: super::#ty,
+          backtrace: ::evitable::Backtrace,
+          source: Option<Box<dyn ::std::error::Error + 'static>>,
+        }
 
         impl Error {
           #[inline]
           fn context(&self) -> &super::#ty {
-            &self.0
+            &self.context
+          }
+
+          #[inline]
+          fn backtrace(&self) -> &::evitable::Backtrace {
+            &self.backtrace
           }
 
           #[inline]
           fn kind(&self) -> ErrorKind {
-            ::evitable::ErrorContext::kind(&self.0)
+            ::evitable::ErrorContext::kind(&self.context)
           }
         }
 
@@ -451,8 +460,8 @@ impl ToTokens for ErrorType {
         #[allow(unused_qualifications)]
         impl ::std::fmt::Display for Error {
           fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-            ::std::fmt::Display::fmt(&self.0, f)?;
-            if let Some(source) = &self.1 {
+            ::std::fmt::Display::fmt(&self.context, f)?;
+            if let Some(source) = &self.source {
               f.write_str("\n---- source ----\n")?;
               ::std::fmt::Display::fmt(source, f)?;
             }
@@ -465,8 +474,9 @@ impl ToTokens for ErrorType {
         #[allow(unused_qualifications)]
         impl ::std::fmt::Debug for Error {
           fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-            ::std::fmt::Debug::fmt(&self.0, f)?;
-            if let Some(source) = &self.1 {
+            // TODO: Include backtrace
+            ::std::fmt::Debug::fmt(&self.context, f)?;
+            if let Some(source) = &self.source {
               f.write_str("\n---- source ----\n")?;
               ::std::fmt::Debug::fmt(source, f)?;
             }
@@ -479,7 +489,7 @@ impl ToTokens for ErrorType {
         #[allow(unused_qualifications)]
         impl ::std::error::Error for Error {
           fn source(&self) -> Option<&(dyn ::std::error::Error + 'static)> {
-            match &self.1 {
+            match &self.source {
               None => None,
               Some(b) => Some(b.as_ref()),
             }
@@ -504,8 +514,19 @@ impl ToTokens for ErrorType {
           }
 
           #[inline]
+          fn backtrace(&self) -> &::evitable::Backtrace {
+            Error::backtrace(self)
+          }
+
+          #[inline]
           fn new(context: Self::Context, source: Option<Box<dyn ::std::error::Error + 'static>>) -> Self {
-            Self(context, source)
+            let backtrace = ::evitable::Backtrace::new();
+
+            Self {
+              context,
+              source,
+              backtrace,
+            }
           }
         }
 
