@@ -74,9 +74,9 @@ use std::fmt::{Debug, Display};
 #[cfg(feature = "derive")]
 pub use evitable_derive::ErrorContext;
 
+pub use backtrace::Backtrace;
 #[doc(hidden)]
 pub use std::error::Error as StdError;
-pub use backtrace::Backtrace;
 
 /// Trait for "error kinds". An `ErrorKind` enum is generated for
 /// every `#[derive(ErrorContext)]` which typically just contains
