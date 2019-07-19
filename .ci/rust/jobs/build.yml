@@ -37,7 +37,7 @@ jobs:
 
   - ${{ if ne(parameters.os, 'windows' )}}:
     - bash: |
-        cargo test -- -Z unstable-options --format json | tee test_results.json || true
+        cargo test --all-features -- -Z unstable-options --format json | tee test_results.json || true
         cat test_results.json | cargo2junit > test_results.xml
       displayName: Run tests
 
@@ -48,5 +48,5 @@ jobs:
         testRunTitle: ${{ parameters.os }}-${{ parameters.toolchain }}
 
   - ${{ if eq(parameters.os, 'windows' )}}:
-    - script: cargo test
+    - script: cargo test  --all-features
       displayName: Run tests

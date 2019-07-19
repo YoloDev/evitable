@@ -129,23 +129,6 @@ impl ErrorUnknownField {
   {
     ErrorUnknownField::new(field, did_you_mean(field, alternates))
   }
-
-  #[cfg(feature = "diagnostics")]
-  pub fn to_diagnostic(self, span: Option<::proc_macro2::Span>) -> ::proc_macro::Diagnostic {
-    let base = span
-      .unwrap_or_else(::proc_macro2::Span::call_site)
-      .unwrap()
-      .error(self.top_line());
-    match self.did_you_mean {
-      Some(alt_name) => base.help(format!("did you mean `{}`?", alt_name)),
-      None => base,
-    }
-  }
-
-  #[cfg(feature = "diagnostics")]
-  fn top_line(&self) -> String {
-    format!("Unknown field: `{}`", self.name)
-  }
 }
 
 impl From<String> for ErrorUnknownField {
