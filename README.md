@@ -47,7 +47,7 @@ pub enum Token {
 }
 
 fn read_file() -> std::result::Result<String, std::io::Error> {
-  // we're pretending to read a file her
+  // we're pretending to read a file here
   Err(std::io::Error::from(std::io::ErrorKind::NotFound))
 }
 
