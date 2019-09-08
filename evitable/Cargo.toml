@@ -9,7 +9,7 @@ description = "Custom error types with context and derive"
 license = "MIT"
 
 [dependencies]
-evitable-derive = { version = "0.2.0", path = "../evitable-derive", optional = true }
+evitable-derive = { version = "^0.3.0", path = "../evitable-derive", optional = true }
 backtrace = { version = "0.3" }
 
 [features]
