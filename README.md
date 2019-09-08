@@ -25,7 +25,7 @@ use evitable::*;
 mod error {
   use super::*;
 
-  #[derive(ErrorContext)]
+  #[evitable]
   pub enum Context {
     #[evitable(description = "Io error", from = std::io::Error)]
     Io,
