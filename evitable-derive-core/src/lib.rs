@@ -20,8 +20,8 @@ use quote::ToTokens;
 use std::borrow::Cow;
 pub use syn::parse_macro_input;
 use syn::{
-  parse_str, spanned::Spanned, Attribute, DataEnum, DataStruct, DeriveInput, Field, Generics,
-  Ident, Path, Type, Variant, Visibility,
+  parse::Parser, parse_str, spanned::Spanned, Attribute, DataEnum, DataStruct, DeriveInput, Field,
+  Generics, Ident, Path, Type, Variant, Visibility,
 };
 use trait_assert::assert_trait_impl;
 
@@ -569,10 +569,146 @@ impl ToTokens for ErrorType {
   }
 }
 
-pub fn derive_evitable(input: &DeriveInput) -> TokenStream {
-  let error_type = ErrorType::from_derive_input(input);
+fn add_attribute(input: &mut DeriveInput, attr: Attribute) {
+  input.attrs.push(attr);
+}
+
+trait AttributeTree {
+  fn visit(&mut self, f: &impl Fn(&mut Vec<Attribute>) -> ());
+}
+
+impl AttributeTree for syn::Field {
+  fn visit(&mut self, f: &impl Fn(&mut Vec<Attribute>) -> ()) {
+    f(&mut self.attrs);
+  }
+}
+
+impl AttributeTree for syn::FieldsNamed {
+  fn visit(&mut self, f: &impl Fn(&mut Vec<Attribute>) -> ()) {
+    for field in self.named.iter_mut() {
+      field.visit(f);
+    }
+  }
+}
+
+impl AttributeTree for syn::FieldsUnnamed {
+  fn visit(&mut self, f: &impl Fn(&mut Vec<Attribute>) -> ()) {
+    for field in self.unnamed.iter_mut() {
+      field.visit(f);
+    }
+  }
+}
+
+impl AttributeTree for syn::Fields {
+  fn visit(&mut self, f: &impl Fn(&mut Vec<Attribute>) -> ()) {
+    match self {
+      syn::Fields::Named(n) => n.visit(f),
+      syn::Fields::Unnamed(u) => u.visit(f),
+      syn::Fields::Unit => (),
+    }
+  }
+}
+
+impl AttributeTree for syn::DataStruct {
+  fn visit(&mut self, f: &impl Fn(&mut Vec<Attribute>) -> ()) {
+    self.fields.visit(f);
+  }
+}
+
+impl AttributeTree for syn::Variant {
+  fn visit(&mut self, f: &impl Fn(&mut Vec<Attribute>) -> ()) {
+    f(&mut self.attrs);
+    self.fields.visit(f);
+  }
+}
+
+impl AttributeTree for syn::DataEnum {
+  fn visit(&mut self, f: &impl Fn(&mut Vec<Attribute>) -> ()) {
+    for variant in self.variants.iter_mut() {
+      variant.visit(f);
+    }
+  }
+}
+
+impl AttributeTree for syn::Data {
+  fn visit(&mut self, f: &impl Fn(&mut Vec<Attribute>) -> ()) {
+    match self {
+      syn::Data::Struct(s) => s.visit(f),
+      syn::Data::Enum(e) => e.visit(f),
+      syn::Data::Union(_) => (),
+    }
+  }
+}
+
+impl AttributeTree for syn::DeriveInput {
+  fn visit(&mut self, f: &impl Fn(&mut Vec<Attribute>) -> ()) {
+    f(&mut self.attrs);
+    self.data.visit(f);
+  }
+}
+
+fn remove_evitable_attrs(input: &mut DeriveInput) {
+  input.visit(&|attrs| {
+    let a = std::mem::replace(attrs, Vec::new());
+    let a = a
+      .into_iter()
+      .filter(|attr| attr.meta().map(|m| !m.is("evitable")).unwrap_or(true))
+      .collect();
+    std::mem::replace(attrs, a);
+  });
+  // //let before_len = input.attrs.len();
+  // let attrs = std::mem::replace(&mut input.attrs, Vec::new());
+  // let attrs = attrs
+  //   .into_iter()
+  //   .filter(|attr| attr.meta().map(|m| !m.is("evitable")).unwrap_or(true))
+  //   .collect();
+  // std::mem::replace(&mut input.attrs, attrs);
+  // //let after_len = input.attrs.len();
+  // // eprintln!(
+  // //   "{} before_len: {}, after_len: {}",
+  // //   input.ident, before_len, after_len
+  // // );
+
+  // match &mut input.data {
+  //   syn::Data::Struct(..) => {}
+  //   syn::Data::Enum(e) => {
+  //     for v in &mut e.variants {
+  //       //let before_len = v.attrs.len();
+  //       let attrs = std::mem::replace(&mut v.attrs, Vec::new());
+  //       let attrs = attrs
+  //         .into_iter()
+  //         .filter(|attr| attr.meta().map(|m| !m.is("evitable")).unwrap_or(true))
+  //         .collect();
+  //       std::mem::replace(&mut v.attrs, attrs);
+  //       //let after_len = v.attrs.len();
+  //       // eprintln!(
+  //       //   "{}::{} before_len: {}, after_len: {}",
+  //       //   input.ident, v.ident, before_len, after_len
+  //       // );
+  //     }
+  //   }
+  //   _ => {}
+  // }
+}
+
+pub fn derive_evitable(meta: &TokenStream, input: &mut DeriveInput) -> TokenStream {
+  let mut cloned = input.clone();
+  remove_evitable_attrs(input);
+
+  if !meta.is_empty() {
+    let meta_attr_quote = quote! {#[evitable(#meta)]};
+    let parser = Attribute::parse_outer;
+    let attr = match parser.parse2(meta_attr_quote) {
+      Ok(val) => val[0].clone(),
+      Err(err) => return err.to_compile_error(),
+    };
+
+    add_attribute(&mut cloned, attr);
+  }
+
+  let error_type = ErrorType::from_derive_input(&cloned);
   match error_type {
-    Ok(val) => val.into_token_stream(),
+    Ok(val) => quote! { #input #val },
     Err(err) => err.write_errors(),
   }
 }

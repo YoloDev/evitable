@@ -2,7 +2,7 @@ extern crate evitable;
 
 use evitable::*;
 
-#[derive(ErrorContext)]
+#[evitable]
 pub enum Context {
   #[evitable(description("Custom error ({})", code))]
   Custom {

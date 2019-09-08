@@ -6,7 +6,6 @@ use std::io::Error as IoError;
 mod unit_struct {
   use super::*;
 
-  #[derive(ErrorContext)]
   #[evitable(description = "Err", from = IoError, from = std::fmt::Error)]
   pub(super) struct Test;
 }
@@ -14,7 +13,6 @@ mod unit_struct {
 mod named_struct {
   use super::*;
 
-  #[derive(ErrorContext)]
   #[evitable(description = "Err", from = IoError, from = std::fmt::Error)]
   pub(super) struct Test {}
 }
@@ -22,7 +20,6 @@ mod named_struct {
 mod unnamed_struct {
   use super::*;
 
-  #[derive(ErrorContext)]
   #[evitable(description = "Err", from = IoError, from = std::fmt::Error)]
   pub(super) struct Test();
 }
@@ -30,7 +27,7 @@ mod unnamed_struct {
 mod all_enum {
   use super::*;
 
-  #[derive(ErrorContext)]
+  #[evitable]
   pub(super) enum Test {
     #[evitable(description = "Io", from = IoError)]
     Io,

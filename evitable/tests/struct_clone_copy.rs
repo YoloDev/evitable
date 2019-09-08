@@ -23,7 +23,6 @@ impl fmt::Display for IncrementWhenCloned {
 mod clone {
   use super::*;
 
-  #[derive(ErrorContext)]
   #[evitable(description("Some test: {}", cloned))]
   pub(super) struct Test {
     #[evitable(include_in_kind, clone)]
@@ -59,7 +58,6 @@ mod clone {
 mod copy {
   use super::*;
 
-  #[derive(ErrorContext)]
   #[evitable(description("Other test: {}", copied))]
   pub(super) struct Test {
     #[evitable(include_in_kind)]

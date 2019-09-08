@@ -1,11 +1,10 @@
 extern crate evitable;
 
-use evitable::ErrorContext;
+use evitable::*;
 
 mod unit_struct {
   use super::*;
 
-  #[derive(ErrorContext)]
   #[evitable(description = "Test error")]
   pub(super) struct Test;
 
@@ -18,7 +17,6 @@ mod unit_struct {
 mod named_struct {
   use super::*;
 
-  #[derive(ErrorContext)]
   #[evitable(description("Test error, code={}", code))]
   pub(super) struct Test {
     code: u8,
@@ -33,7 +31,6 @@ mod named_struct {
 mod unnamed_struct {
   use super::*;
 
-  #[derive(ErrorContext)]
   #[evitable(description("Test({})", 0))]
   pub(super) struct Test(u8);
 
@@ -46,7 +43,7 @@ mod unnamed_struct {
 mod all_enum {
   use super::*;
 
-  #[derive(ErrorContext)]
+  #[evitable]
   pub(super) enum Test {
     #[evitable(description = "Io")]
     Io,

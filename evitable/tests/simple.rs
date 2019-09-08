@@ -2,7 +2,6 @@ extern crate evitable;
 
 use evitable::*;
 
-#[derive(ErrorContext)]
 #[evitable(description = "Error")]
 struct Context;
 
