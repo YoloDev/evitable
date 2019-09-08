@@ -10,7 +10,7 @@ license = "MIT"
 
 [dependencies]
 ident_case = "1"
-proc-macro2 = "0.4"
-quote = "0.6"
-syn = { version = "0.15", features = ["full", "extra-traits"] }
+proc-macro2 = "1"
+quote = "1"
+syn = { version = "1", features = ["full", "extra-traits"] }
 evitable-syn-meta-ext = { version = "0.2.0", path = "../syn-meta-ext" }

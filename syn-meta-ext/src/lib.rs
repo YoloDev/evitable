@@ -116,7 +116,7 @@ impl AttrExt for Attribute {
   fn meta(&self) -> Result<Meta> {
     let parser = |input: ParseStream| parse_meta_after_path(self.path.clone(), input);
 
-    parse::Parser::parse2(parser, self.tts.clone())
+    parse::Parser::parse2(parser, self.tokens.clone())
   }
 }
 

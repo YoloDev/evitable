@@ -77,7 +77,7 @@ pub trait FromMeta: Sized {
       Lit::Bool(b) => Self::from_bool(b.value, b),
       Lit::Str(s) => Self::from_string(&s.value(), s),
       Lit::Char(c) => Self::from_char(c.value(), c),
-      Lit::Int(i) => Self::from_int(i.value(), i),
+      Lit::Int(i) => Self::from_int(i.base10_parse()?, i),
       _ => Err(Error::unexpected_lit_type(lit)),
     })
     .map_err(|e| e.with_span(lit))
@@ -183,7 +183,7 @@ macro_rules! from_meta_num {
       fn from_lit(value: &Lit) -> Result<Self> {
         (match value {
           Lit::Str(s) => Self::from_string(&s.value(), s),
-          Lit::Int(s) => Ok(s.value() as $ty),
+          Lit::Int(s) => Ok(s.base10_parse()?),
           v => Err(Error::unexpected_lit_type(value).with_span(&v)),
         })
         .map_err(|e| e.with_span(value))
@@ -216,7 +216,7 @@ macro_rules! from_meta_float {
       fn from_lit(value: &Lit) -> Result<Self> {
         (match value {
           Lit::Str(s) => Self::from_string(&s.value(), s),
-          Lit::Float(s) => Ok(s.value() as $ty),
+          Lit::Float(s) => Ok(s.base10_parse()?),
           v => Err(Error::unexpected_lit_type(value).with_span(&v)),
         })
         .map_err(|e| e.with_span(value))
@@ -290,7 +290,7 @@ from_meta_lit!(syn::LitByte, Lit::Byte);
 from_meta_lit!(syn::LitByteStr, Lit::ByteStr);
 from_meta_lit!(syn::LitChar, Lit::Char);
 from_meta_lit!(syn::LitBool, Lit::Bool);
-from_meta_lit!(syn::LitVerbatim, Lit::Verbatim);
+from_meta_lit!(proc_macro2::Literal, Lit::Verbatim);
 
 impl FromMeta for Meta {
   fn from_meta(value: &Meta) -> Result<Self> {

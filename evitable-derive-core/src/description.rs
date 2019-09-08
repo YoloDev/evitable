@@ -55,7 +55,7 @@ impl FromMeta for Description {
       Lit::Bool(b) => Self::from_bool(b.value, b),
       Lit::Str(s) => Ok(Description::String(s.clone())),
       Lit::Char(c) => Self::from_char(c.value(), c),
-      Lit::Int(i) => Self::from_int(i.value(), i),
+      Lit::Int(i) => Self::from_int(i.base10_parse()?, i),
       _ => Err(Error::unexpected_lit_type(lit)),
     })
     .map_err(|e| e.with_span(lit))
@@ -114,10 +114,10 @@ impl Description {
     match fields {
       Fields::Unit => self.resolve(|r| match r {
         FieldRef::Ident(i) => Err(Error::unknown_field(&i.to_string()).with_span(&i)),
-        FieldRef::Index(i) => Err(Error::unknown_field(&i.value().to_string()).with_span(&i)),
+        FieldRef::Index(i) => Err(Error::unknown_field(i.base10_digits()).with_span(&i)),
       }),
       Fields::Named(f) => self.resolve(|r| match r {
-        FieldRef::Index(i) => Err(Error::unknown_field(&i.value().to_string()).with_span(&i)),
+        FieldRef::Index(i) => Err(Error::unknown_field(i.base10_digits()).with_span(&i)),
         FieldRef::Ident(i) => match f.iter().find(|(f, _)| f.to_string() == i.to_string()) {
           None => Err(Error::unknown_field(&i.to_string()).with_span(&i)),
           Some(_) => Ok(quote! { #ident.#i }),
@@ -125,8 +125,8 @@ impl Description {
       }),
       Fields::Unnamed(f) => self.resolve(|r| match r {
         FieldRef::Ident(i) => Err(Error::unknown_field(&i.to_string()).with_span(&i)),
-        FieldRef::Index(i) => match f.iter().find(|(f, _)| *f as u64 == i.value()) {
-          None => Err(Error::unknown_field(&i.value().to_string()).with_span(&i)),
+        FieldRef::Index(i) => match f.iter().find(|(f, _)| *f as u64 == i.base10_parse().unwrap()) {
+          None => Err(Error::unknown_field(i.base10_digits()).with_span(&i)),
           Some(_) => Ok(quote! { #ident.#i }),
         },
       }),
@@ -137,10 +137,10 @@ impl Description {
     match fields {
       Fields::Unit => self.resolve(|r| match r {
         FieldRef::Ident(i) => Err(Error::unknown_field(&i.to_string()).with_span(&i)),
-        FieldRef::Index(i) => Err(Error::unknown_field(&i.value().to_string()).with_span(&i)),
+        FieldRef::Index(i) => Err(Error::unknown_field(i.base10_digits()).with_span(&i)),
       }),
       Fields::Named(f) => self.resolve(|r| match r {
-        FieldRef::Index(i) => Err(Error::unknown_field(&i.value().to_string()).with_span(&i)),
+        FieldRef::Index(i) => Err(Error::unknown_field(i.base10_digits()).with_span(&i)),
         FieldRef::Ident(i) => match f.iter().find(|(f, _)| f.to_string() == i.to_string()) {
           None => Err(Error::unknown_field(&i.to_string()).with_span(&i)),
           Some(_) => Ok(quote! { #i }),
@@ -148,8 +148,8 @@ impl Description {
       }),
       Fields::Unnamed(f) => self.resolve(|r| match r {
         FieldRef::Ident(i) => Err(Error::unknown_field(&i.to_string()).with_span(&i)),
-        FieldRef::Index(i) => match f.iter().find(|(f, _)| *f as u64 == i.value()) {
-          None => Err(Error::unknown_field(&i.value().to_string()).with_span(&i)),
+        FieldRef::Index(i) => match f.iter().find(|(f, _)| *f as u64 == i.base10_parse().unwrap()) {
+          None => Err(Error::unknown_field(i.base10_digits()).with_span(&i)),
           Some((i, _)) => Ok({
             let ident = i.into_ident();
             quote! { #ident }

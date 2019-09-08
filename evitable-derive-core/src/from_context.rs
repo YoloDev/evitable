@@ -40,7 +40,7 @@ fn create_struct_kind<'a>(
         assignments.push(quote! { #copy, });
       }
 
-      tokens.extend(quote! { ErrorKind::#name { #(assignments)* } })
+      tokens.extend(quote! { ErrorKind::#name { #(#assignments)* } })
     }
   }
 }
