@@ -1,6 +1,6 @@
 [package]
 name = "evitable-syn-meta-ext"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Aleksander Heintz <alxandr@alxandr.me>"]
 edition = "2018"
 homepage = "https://github.com/YoloDev/evitable"
