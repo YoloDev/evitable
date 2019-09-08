@@ -397,7 +397,7 @@ impl<T, E: StdError + 'static, C: ErrorContext> ResultExt<T, E, C> for Result<T,
 macro_rules! ensure {
   ($test:expr, $ctx:expr) => {
     if !($test) {
-      let _ = Err($ctx)?;
+      return Err($ctx.into());
     }
   };
 }
@@ -429,6 +429,6 @@ macro_rules! ensure {
 #[macro_export]
 macro_rules! fail {
   ($ctx:expr) => {
-    let _ = Err($ctx)?;
+    return Err($ctx.into());
   };
 }
