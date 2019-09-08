@@ -9,7 +9,7 @@ description = "Derive implementation for evitable"
 license = "MIT"
 
 [dependencies]
-evitable-derive-core = { version = "0.2.0", path = "../evitable-derive-core" }
+evitable-derive-core = { version = "^0.3.0", path = "../evitable-derive-core" }
 
 [lib]
 proc-macro = true
