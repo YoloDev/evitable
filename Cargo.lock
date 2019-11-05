@@ -49,7 +49,7 @@ dependencies = [
 name = "evitable-derive-core"
 version = "0.3.0"
 dependencies = [
- "evitable-syn-meta-ext 0.3.0",
+ "evitable-syn-meta-ext 0.4.0",
  "ident_case 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "proc-macro2 1.0.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "quote 1.0.2 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -58,7 +58,7 @@ dependencies = [
 
 [[package]]
 name = "evitable-syn-meta-ext"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "ident_case 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "proc-macro2 1.0.3 (registry+https://github.com/rust-lang/crates.io-index)",
