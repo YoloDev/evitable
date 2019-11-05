@@ -35,12 +35,12 @@ name = "evitable"
 version = "0.3.1"
 dependencies = [
  "backtrace 0.3.33 (registry+https://github.com/rust-lang/crates.io-index)",
- "evitable-derive 0.3.0",
+ "evitable-derive 0.4.0",
 ]
 
 [[package]]
 name = "evitable-derive"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "evitable-derive-core 0.4.0",
 ]
