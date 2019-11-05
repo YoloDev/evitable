@@ -427,7 +427,7 @@ impl ToTokens for ErrorType {
         #mod_item_vis struct Error {
           context: super::#ty,
           backtrace: ::evitable::Backtrace,
-          source: Option<Box<dyn ::std::error::Error + 'static>>,
+          source: Option<Box<dyn ::std::error::Error + ::std::marker::Send + ::std::marker::Sync + 'static>>,
         }
 
         impl Error {
@@ -519,7 +519,7 @@ impl ToTokens for ErrorType {
           }
 
           #[inline]
-          fn new(context: Self::Context, source: Option<Box<dyn ::std::error::Error + 'static>>) -> Self {
+          fn new(context: Self::Context, source: Option<Box<dyn ::std::error::Error + ::std::marker::Send + ::std::marker::Sync + 'static>>) -> Self {
             let backtrace = ::evitable::Backtrace::new();
 
             Self {
