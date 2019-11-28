@@ -13,4 +13,4 @@ ident_case = "1"
 proc-macro2 = "1"
 quote = "1"
 syn = { version = "1", features = ["full", "extra-traits"] }
-evitable-syn-meta-ext = { version = "^0.4.0", path = "../syn-meta-ext" }
+evitable-syn-meta-ext = { version = "^0.5.0", path = "../syn-meta-ext" }
