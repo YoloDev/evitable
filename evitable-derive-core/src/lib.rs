@@ -232,6 +232,7 @@ impl FromMeta for TypeAliasName {
 
 struct ErrorType {
   ident: Ident,
+  prefix: Option<String>,
   vis: Visibility,
   generics: Generics,
   data: ErrorData,
@@ -340,14 +341,24 @@ impl ErrorType {
     data: ErrorData,
     attrs: ErrorTypeAttrs,
   ) -> Result<Self> {
-    let mod_name =
-      "evitable_".to_owned() + &RenameRule::SnakeCase.apply_to_variant(ident.to_string());
+    let ident_str = ident.to_string();
+    let (mod_name, prefix) = if ident_str.ends_with("Context") && ident_str.len() > "Context".len()
+    {
+      let prefix = ident_str[0..ident_str.len() - "Context".len()].to_string();
+      let mod_name = RenameRule::SnakeCase.apply_to_variant(&prefix);
+      (mod_name, Some(prefix))
+    } else {
+      let mod_name = "evitable_".to_owned() + &RenameRule::SnakeCase.apply_to_variant(ident_str);
+      (mod_name, None)
+    };
+
     let mod_name = Ident::new(&mod_name, ident.span());
     let mod_vis = visibility::inherited(&vis, 1);
     let impls_from = Self::impl_froms(&data, &ident, &mod_name)?;
 
     Ok(Self {
       ident,
+      prefix,
       vis,
       generics,
       data,
@@ -549,19 +560,29 @@ impl ToTokens for ErrorType {
       }
     });
 
-    if let Some(ident) = self.attrs.error_type_name.ident("Error") {
+    let prefixed = |s: &'static str| match &self.prefix {
+      None => Cow::Borrowed(s),
+      Some(p) => {
+        let mut full = String::with_capacity(s.len() + p.len());
+        full.push_str(p);
+        full.push_str(s);
+        Cow::Owned(full)
+      }
+    };
+
+    if let Some(ident) = self.attrs.error_type_name.ident(&prefixed("Error")) {
       tokens.extend(quote! {
         #vis type #ident = #mod_name::Error;
       });
     }
 
-    if let Some(ident) = self.attrs.result_type_name.ident("Result") {
+    if let Some(ident) = self.attrs.result_type_name.ident(&prefixed("Result")) {
       tokens.extend(quote! {
         #vis type #ident<T> = #mod_name::Result<T>;
       });
     }
 
-    if let Some(ident) = self.attrs.kind_type_name.ident("ErrorKind") {
+    if let Some(ident) = self.attrs.kind_type_name.ident(&prefixed("ErrorKind")) {
       tokens.extend(quote! {
         #vis type #ident = #mod_name::ErrorKind;
       });
@@ -656,39 +677,6 @@ fn remove_evitable_attrs(input: &mut DeriveInput) {
       .collect();
     std::mem::replace(attrs, a);
   });
-  // //let before_len = input.attrs.len();
-  // let attrs = std::mem::replace(&mut input.attrs, Vec::new());
-  // let attrs = attrs
-  //   .into_iter()
-  //   .filter(|attr| attr.meta().map(|m| !m.is("evitable")).unwrap_or(true))
-  //   .collect();
-  // std::mem::replace(&mut input.attrs, attrs);
-  // //let after_len = input.attrs.len();
-  // // eprintln!(
-  // //   "{} before_len: {}, after_len: {}",
-  // //   input.ident, before_len, after_len
-  // // );
-
-  // match &mut input.data {
-  //   syn::Data::Struct(..) => {}
-  //   syn::Data::Enum(e) => {
-  //     for v in &mut e.variants {
-  //       //let before_len = v.attrs.len();
-  //       let attrs = std::mem::replace(&mut v.attrs, Vec::new());
-  //       let attrs = attrs
-  //         .into_iter()
-  //         .filter(|attr| attr.meta().map(|m| !m.is("evitable")).unwrap_or(true))
-  //         .collect();
-  //       std::mem::replace(&mut v.attrs, attrs);
-  //       //let after_len = v.attrs.len();
-  //       // eprintln!(
-  //       //   "{}::{} before_len: {}, after_len: {}",
-  //       //   input.ident, v.ident, before_len, after_len
-  //       // );
-  //     }
-  //   }
-  //   _ => {}
-  // }
 }
 
 pub fn derive_evitable(meta: &TokenStream, input: &mut DeriveInput) -> TokenStream {

@@ -26,7 +26,7 @@ mod error {
   use super::*;
 
   #[evitable]
-  pub enum Context {
+  pub enum ParseContext {
     #[evitable(description = "Io error", from = std::io::Error)]
     Io,
 
@@ -46,15 +46,15 @@ pub enum Token {
   EndOfFile,
 }
 
-fn read_file() -> std::result::Result<String, std::io::Error> {
+fn read_file() -> Result<String, std::io::Error> {
   // we're pretending to read a file here
   Err(std::io::Error::from(std::io::ErrorKind::NotFound))
 }
 
 // main function
-fn parse_file() -> Result<Token> {
+fn parse_file() -> ParseResult<Token> {
   let content = read_file()?;
-  ensure!(content == "EOF", Context::InvalidToken {
+  ensure!(content == "EOF", ParseContext::InvalidToken {
     expected: "EOF".to_owned(),
     actual: content,
   });
@@ -64,5 +64,5 @@ fn parse_file() -> Result<Token> {
 
 let result = parse_file();
 let err = result.unwrap_err();
-assert_eq!(err.kind(), evitable_context::ErrorKind::Io);
+assert_eq!(err.kind(), ParseErrorKind::Io);
 ```
